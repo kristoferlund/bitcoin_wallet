@@ -11,7 +11,7 @@ use crate::{
     auth_guard,
     common::{get_fee_per_byte, PrimaryOutput},
     p2tr::{self},
-    schnorr::{get_schnorr_public_key, mock_sign_with_schnorr},
+    schnorr::{get_schnorr_public_key, sign_with_schnorr},
     BTC_CONTEXT,
 };
 
@@ -104,7 +104,7 @@ pub async fn send_btc(
         prevouts.as_slice(),
         internal_key_path,
         vec![], // No Merkle root for key-path-only spending
-        mock_sign_with_schnorr,
+        sign_with_schnorr,
     )
     .await;
 

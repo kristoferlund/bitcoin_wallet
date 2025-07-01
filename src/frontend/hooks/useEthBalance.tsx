@@ -1,32 +1,43 @@
-import { useActor } from "@/actor";
-import { useQuery } from "@tanstack/react-query";
-import useHandleAgentError from "./useHandleAgentError";
+import { useActor } from '@/actor';
+import { useQuery } from '@tanstack/react-query';
+import useHandleAgentError from './useHandleAgentError';
+import { useInternetIdentity } from 'ic-use-internet-identity';
 
-export default function useEthBalance(address?: string) {
+export default function useEthBalance() {
   const { actor: backend } = useActor();
   const { handleAgentError } = useHandleAgentError();
+  const { identity } = useInternetIdentity();
+  const principal = identity?.getPrincipal();
+
   return useQuery({
-    queryKey: ['balance', address],
+    queryKey: ['balance', principal],
     queryFn: async () => {
-      const response = await fetch(`https://api-sepolia.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=${import.meta.env.VITE_ETHERSCAN_API_KEY}`);
-      const json = await response.json();
+      if (!principal) {
+        throw new Error('Principal is required.');
+      }
+
       try {
-        if (json === undefined) {
-          throw new Error("Undefined balance returned.")
+        const result = await backend?.get_balance([principal]);
+
+        if (result === undefined) {
+          throw new Error('Undefined balance returned.');
         }
-        if ('result' in json) {
-          return json.result;
+
+        if ('Err' in result) {
+          throw new Error(result.Err);
         }
-        return "0";
+
+        const balance = result.Ok;
+
+        console.log(result.Ok);
+
+        return balance;
       } catch (e) {
         handleAgentError(e);
         console.error(e);
-        throw new Error("Invalid balance returned.")
+        throw new Error('Invalid address returned.');
       }
     },
-    enabled: !!backend && !!address
-
-  })
+    enabled: !!backend && !!principal,
+  });
 }
-
-

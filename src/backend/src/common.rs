@@ -10,7 +10,6 @@ use bitcoin::{
 use ic_cdk::bitcoin_canister::{
     bitcoin_get_current_fee_percentiles, GetCurrentFeePercentilesRequest, Utxo,
 };
-use std::fmt;
 
 /// Selects UTXOs using a greedy algorithm to cover the required amount plus fee.
 ///
@@ -75,6 +74,7 @@ pub enum PrimaryOutput {
     /// Pay someone (spendable output).
     Address(Address, u64), // destination address, amount in satoshis
     /// Embed data (unspendable OP_RETURN output).
+    #[allow(dead_code)]
     OpReturn(ScriptBuf), // script already starts with OP_RETURN
 }
 
@@ -204,125 +204,5 @@ pub async fn get_fee_per_byte(ctx: &BitcoinContext) -> u64 {
         // Use the 50th percentile (median) for balanced confirmation time and cost.
         // This avoids both overpaying (high percentiles) and slow confirmation (low percentiles).
         fee_percentiles[50]
-    }
-}
-
-/// Purpose field for BIP-32 hierarchical deterministic wallet derivation paths.
-///
-/// The purpose field determines the address type according to Bitcoin Improvement Proposals:
-/// - BIP-44 for P2PKH (legacy addresses): purpose = 44'
-/// - BIP-84 for P2WPKH (native SegWit addresses): purpose = 84'
-/// - BIP-86 for P2TR (Taproot addresses): purpose = 86'
-///
-/// These standards ensure wallet compatibility and predictable address generation.
-pub enum Purpose {
-    P2PKH,  // BIP-44
-    P2WPKH, // BIP-84
-    P2TR,   // BIP-86
-}
-
-impl Purpose {
-    fn to_u32(&self) -> u32 {
-        match self {
-            Purpose::P2PKH => 44,
-            Purpose::P2WPKH => 84,
-            Purpose::P2TR => 86,
-        }
-    }
-}
-
-/// Represents a complete BIP-32 hierarchical deterministic wallet derivation path.
-///
-/// The path follows the standard format: m / purpose / coin_type / account / change / address_index
-/// This structure enables:
-/// - Deterministic key generation from a single seed
-/// - Logical separation of different address types and accounts
-/// - Privacy through address rotation within accounts
-///
-/// This implementation supports BIP-44 (P2PKH), BIP-84 (P2WPKH), and BIP-86 (P2TR) standards
-/// and provides serialization compatible with the Internet Computer's key derivation APIs.
-///
-/// The concept of a wallet derivation path being hardened does not apply on ICP, since key
-/// derivation is entirely handled by the subnet and private keys are never accessible. Derivation paths
-/// function purely as deterministic identifiers.
-pub struct DerivationPath {
-    /// Purpose according to BIP-43 (e.g., 44 for legacy, 84 for SegWit, 86 for Taproot)
-    purpose: Purpose,
-
-    /// Coin type (0 = Bitcoin mainnet/testnet). Can be extended for altcoins.
-    coin_type: u32,
-
-    /// Logical account identifier. Use this to separate multiple user accounts or roles.
-    account: u32,
-
-    /// Chain: 0 = external (receive), 1 = internal (change)
-    change: u32,
-
-    /// Address index: used to derive multiple addresses within the same account.
-    address_index: u32,
-}
-
-impl DerivationPath {
-    /// Constructs a new derivation path with the specified parameters.
-    ///
-    /// Parameters:
-    /// - `purpose`: Determines the address type and BIP standard to follow
-    /// - `account`: Logical account separation (use different accounts for different users/purposes)
-    /// - `address_index`: Address index within the account (increment for new addresses)
-    ///
-    /// Fixed values:
-    /// - `coin_type`: Always 0 (Bitcoin mainnet/testnet)
-    /// - `change`: Always 0 (external/receiving addresses, not internal change addresses)
-    fn new(purpose: Purpose, account: u32, address_index: u32) -> Self {
-        Self {
-            purpose,
-            coin_type: 0,
-            account,
-            change: 0,
-            address_index,
-        }
-    }
-
-    /// Convenience constructor for P2PKH (legacy) addresses.
-    pub fn p2pkh(account: u32, address_index: u32) -> Self {
-        Self::new(Purpose::P2PKH, account, address_index)
-    }
-
-    /// Convenience constructor for P2WPKH (native SegWit) addresses.
-    pub fn p2wpkh(account: u32, address_index: u32) -> Self {
-        Self::new(Purpose::P2WPKH, account, address_index)
-    }
-
-    /// Convenience constructor for P2TR (Taproot) addresses.
-    pub fn p2tr(account: u32, address_index: u32) -> Self {
-        Self::new(Purpose::P2TR, account, address_index)
-    }
-
-    /// Converts the derivation path to the binary format expected by IC's key derivation APIs.
-    ///
-    /// Returns a Vec<Vec<u8>> where each inner Vec represents one level of the path
-    /// as a 4-byte big-endian encoded integer.
-    pub fn to_vec_u8_path(&self) -> Vec<Vec<u8>> {
-        vec![
-            self.purpose.to_u32().to_be_bytes().to_vec(),
-            self.coin_type.to_be_bytes().to_vec(),
-            self.account.to_be_bytes().to_vec(),
-            self.change.to_be_bytes().to_vec(),
-            self.address_index.to_be_bytes().to_vec(),
-        ]
-    }
-}
-
-impl fmt::Display for DerivationPath {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "m/{}/{}/{}/{}/{}",
-            self.purpose.to_u32(),
-            self.coin_type,
-            self.account,
-            self.change,
-            self.address_index
-        )
     }
 }

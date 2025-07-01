@@ -1,14 +1,16 @@
-import useEthBalance from "@/hooks/useEthBalance";
-import { Skeleton } from "./ui/skeleton";
-import { ethStringToDecimal } from "@/lib/eth";
-import useEthAddress from "@/hooks/useEthAddress";
+import useEthBalance from '@/hooks/useEthBalance';
+import { Skeleton } from './ui/skeleton';
+import { satoshiToDecimal } from '@/lib/btc';
 
 export function Balance() {
-  const { data: address } = useEthAddress();
-  const { data: balance, isPending: isFetchingBalance, isError } = useEthBalance(address);
+  const {
+    data: balance,
+    isPending: isFetchingBalance,
+    isError,
+  } = useEthBalance();
 
   if (isFetchingBalance) {
-    return <Skeleton className="w-full h-14" />
+    return <Skeleton className="w-full h-14" />;
   }
 
   if (isError) {
@@ -16,13 +18,12 @@ export function Balance() {
       <div className="text-4xl font-semibold bg-destructive/30 rounded-lg p-2 text-destructive-foreground">
         Couldn't get wallet balance.
       </div>
-    )
-  };
+    );
+  }
 
   return (
     <div className="text-4xl font-semibold">
-      {ethStringToDecimal(balance)} SepoliaETH
+      {satoshiToDecimal(balance)} BTC
     </div>
   );
-
 }

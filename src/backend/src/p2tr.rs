@@ -6,63 +6,15 @@ use crate::{
 use bitcoin::{
     blockdata::witness::Witness,
     hashes::Hash,
-    key::XOnlyPublicKey,
-    secp256k1::{schnorr::Signature, PublicKey, Secp256k1},
+    secp256k1::schnorr::Signature,
     sighash::{SighashCache, TapSighashType},
-    taproot::{ControlBlock, LeafVersion, TapLeafHash, TaprootBuilder, TaprootSpendInfo},
     Address, AddressType, ScriptBuf, Sequence, Transaction, TxOut,
 };
 use ic_cdk::bitcoin_canister::{MillisatoshiPerByte, Utxo};
 
-/// Constructs the full Taproot spend info for a script-path-enabled Taproot output.
-///
-/// This function:
-/// - Converts the given internal and script leaf public keys into x-only format (as required by BIP-341)
-/// - Constructs a script leaf of the form `<script_leaf_key> OP_CHECKSIG`
-/// - Commits the script into a Taproot Merkle tree (with a single leaf)
-/// - Applies the BIP-341 tweak to the internal key to compute the output key
-///
-/// The resulting `TaprootSpendInfo` contains the tweaked output key and metadata
-/// (including the control block) required for script path spending.
-pub fn create_taproot_spend_info(
-    internal_key_bytes: &[u8],
-    script_key_bytes: &[u8],
-) -> TaprootSpendInfo {
-    // Convert the internal key to x-only format (required for Taproot tweaking).
-    let internal_key = XOnlyPublicKey::from(PublicKey::from_slice(internal_key_bytes).unwrap());
-
-    // Build the script leaf committed to in the Taproot tree.
-    // This must exactly match what will be used for script path spending.
-    let spend_script = create_spend_script(script_key_bytes);
-
-    // Construct the Taproot output:
-    // - A TaprootBuilder is used to create a Merkle tree with one leaf (our spend_script).
-    // - The tree is finalized using the internal key, producing a tweaked output key.
-    let secp256k1_engine = Secp256k1::new();
-    TaprootBuilder::new()
-        .add_leaf(0, spend_script.clone())
-        .expect("adding leaf should work")
-        .finalize(&secp256k1_engine, internal_key)
-        .expect("finalizing taproot builder should work")
-}
-
-/// Constructs a Taproot leaf script of the form `<script_leaf_key> OP_CHECKSIG`.
-///
-/// This script is used in Taproot script path spending. It allows spending
-/// with a single Schnorr signature corresponding to the committed script leaf key.
-///
-/// The key must match the one committed in the Taproot output's Merkle tree.
-pub fn create_spend_script(script_key_bytes: &[u8]) -> ScriptBuf {
-    let script_key = XOnlyPublicKey::from(PublicKey::from_slice(script_key_bytes).unwrap());
-
-    bitcoin::blockdata::script::Builder::new()
-        .push_x_only_key(&script_key)
-        .push_opcode(bitcoin::blockdata::opcodes::all::OP_CHECKSIG)
-        .into_script()
-}
-
 pub enum SelectUtxosMode {
     Greedy,
+    #[allow(dead_code)]
     Single,
 }
 
@@ -125,77 +77,6 @@ pub(crate) async fn build_transaction(
             total_fee = (tx_vsize * fee_per_byte) / 1000;
         }
     }
-}
-
-// Sign a P2TR script spend transaction.
-//
-// IMPORTANT: This method is for demonstration purposes only and it only
-// supports signing transactions if:
-//
-// 1. All the inputs are referencing outpoints that are owned by `own_address`.
-// 2. `own_address` is a P2TR address that includes a script.
-pub async fn sign_transaction_script_spend<SignFun, Fut>(
-    ctx: &BitcoinContext,
-    own_address: &Address,
-    mut transaction: Transaction,
-    prevouts: &[TxOut],
-    control_block: &ControlBlock,
-    script: &ScriptBuf,
-    derivation_path: Vec<Vec<u8>>,
-    signer: SignFun,
-) -> Transaction
-where
-    SignFun: Fn(String, Vec<Vec<u8>>, Option<Vec<u8>>, Vec<u8>) -> Fut,
-    Fut: std::future::Future<Output = Vec<u8>>,
-{
-    assert_eq!(own_address.address_type(), Some(AddressType::P2tr),);
-
-    for input in transaction.input.iter_mut() {
-        input.script_sig = ScriptBuf::default();
-        input.witness = Witness::default();
-        input.sequence = Sequence::ENABLE_RBF_NO_LOCKTIME;
-    }
-
-    let num_inputs = transaction.input.len();
-
-    for i in 0..num_inputs {
-        let mut sighasher = SighashCache::new(&mut transaction);
-
-        let leaf_hash = TapLeafHash::from_script(script, LeafVersion::TapScript);
-
-        let signing_data = sighasher
-            .taproot_script_spend_signature_hash(
-                i,
-                &bitcoin::sighash::Prevouts::All(prevouts),
-                leaf_hash,
-                TapSighashType::Default,
-            )
-            .expect("Failed to encode signing data")
-            .as_byte_array()
-            .to_vec();
-
-        let raw_signature = signer(
-            ctx.key_name.to_string(),
-            derivation_path.clone(),
-            None,
-            signing_data.clone(),
-        )
-        .await;
-
-        // Update the witness stack.
-
-        let witness = sighasher.witness_mut(i).unwrap();
-        witness.clear();
-        let signature = bitcoin::taproot::Signature {
-            signature: Signature::from_slice(&raw_signature).expect("failed to parse signature"),
-            sighash_type: TapSighashType::Default,
-        };
-        witness.push(signature.to_vec());
-        witness.push(script.to_bytes());
-        witness.push(control_block.serialize());
-    }
-
-    transaction
 }
 
 // Sign a P2TR key spend transaction.
