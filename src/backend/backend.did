@@ -1,0 +1,18 @@
+type AddressResult = variant { Ok : text; Err : text };
+type BalanceResult = variant { Ok : nat64; Err : text };
+type SendResult = variant { Ok : text; Err : text };
+
+type BitcoinAddress = text;
+type Satoshi = nat64;
+
+type Network = variant {
+  regtest;
+  testnet;
+  mainnet;
+};
+
+service : (Network) -> {
+  get_address : (owner: opt principal) -> (AddressResult);
+  get_balance : (owner: opt principal) -> (BalanceResult);
+  send_btc : (destination_address : BitcoinAddress, amount_in_satoshi : Satoshi) -> (SendResult);
+}
