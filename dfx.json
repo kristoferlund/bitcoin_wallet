@@ -2,18 +2,18 @@
   "canisters": {
     "internet_identity": {
       "type": "custom",
-      "candid": "https://github.com/dfinity/internet-identity/releases/download/release-2024-10-01/internet_identity.did",
+      "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
       "declarations": {
         "output": "src/internet_identity/declarations"
       },
+      "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz",
       "remote": {
         "id": {
           "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
         }
       },
-      "frontend": {},
       "specified_id": "rdmx6-jaaaa-aaaaa-aaadq-cai",
-      "wasm": "https://github.com/dfinity/internet-identity/releases/download/release-2024-10-01/internet_identity_dev.wasm.gz"
+      "frontend": {}
     },
     "backend": {
       "build": "build.sh",
@@ -37,13 +37,9 @@
       "declarations": {
         "output": "src/frontend/declarations"
       },
-      "source": [
-        "dist"
-      ],
+      "source": ["dist"],
       "type": "assets",
-      "build": [
-        "pnpm run build"
-      ]
+      "build": ["pnpm run build"]
     }
   },
   "output_env_file": ".env",
