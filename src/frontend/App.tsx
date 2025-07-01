@@ -21,25 +21,25 @@ export default function App() {
 
       <div className="links">
         <a
-          href="https://github.com/ic-alloy/ic-alloy-basic-wallet/graphs/contributors"
+          href="https://github.com/kristoferlund/bitcoin_wallet/graphs/contributors"
           target="_blank"
           rel="noreferrer"
         >
-          <img src="https://img.shields.io/github/contributors/ic-alloy/ic-alloy-basic-wallet.svg?style=for-the-badge" />
+          <img src="https://img.shields.io/github/contributors/kristoferlund/bitcoin_wallet.svg?style=for-the-badge" />
         </a>
         <a
-          href="https://github.com/ic-alloy/ic-alloy-basic-wallet"
+          href="https://github.com/kristoferlund/bitcoin_wallet"
           target="_blank"
           rel="noreferrer"
         >
-          <img src="https://img.shields.io/github/license/ic-alloy/ic-alloy-basic-wallet.svg?style=for-the-badge" />
+          <img src="https://img.shields.io/github/license/kristoferlund/bitcoin_wallet.svg?style=for-the-badge" />
         </a>
         <a
-          href="https://github.com/ic-alloy/ic-alloy-basic-wallet/stargazers"
+          href="https://github.com/kristoferlund/bitcoin_wallet/stargazers"
           target="_blank"
           rel="noreferrer"
         >
-          <img src="https://img.shields.io/github/stars/ic-alloy/ic-alloy-basic-wallet?style=for-the-badge" />
+          <img src="https://img.shields.io/github/stars/kristoferlund/bitcoin_wallet?style=for-the-badge" />
         </a>
       </div>
     </main>

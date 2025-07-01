@@ -9,7 +9,7 @@ export default function Wallet() {
   return (
     <section className="flex flex-col gap-5">
       <div className="flex justify-between items-center">
-        <h3>Wallet</h3>
+        <h3>Bitcoin Wallet</h3>
         <Logout />
       </div>
       <div className="flex items-center gap-2">

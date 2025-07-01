@@ -51,7 +51,7 @@ export default function ReceiveButton() {
                 }}
                 value={`bitcoin:${address}`}
                 viewBox={`0 0 256 256`}
-                bgColor="#00ffa6"
+                bgColor="#EA580C"
               />
             </div>
             <code
