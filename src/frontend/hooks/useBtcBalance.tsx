@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import useHandleAgentError from './useHandleAgentError';
 import { useInternetIdentity } from 'ic-use-internet-identity';
 
-export default function useEthBalance() {
+export default function useBtcBalance() {
   const { actor: backend } = useActor();
   const { handleAgentError } = useHandleAgentError();
   const { identity } = useInternetIdentity();
@@ -35,7 +35,7 @@ export default function useEthBalance() {
       } catch (e) {
         handleAgentError(e);
         console.error(e);
-        throw new Error('Invalid address returned.');
+        throw new Error('Invalid balance returned.');
       }
     },
     enabled: !!backend && !!principal,

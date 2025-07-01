@@ -1,5 +1,5 @@
 use crate::{
-    common::{build_transaction_with_fee, select_one_utxo, select_utxos_greedy, PrimaryOutput},
+    btc::{build_transaction_with_fee, select_one_utxo, select_utxos_greedy, PrimaryOutput},
     schnorr::mock_sign_with_schnorr,
     BitcoinContext,
 };

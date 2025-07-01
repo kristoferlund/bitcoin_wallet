@@ -8,18 +8,18 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from './ui/input';
-import useEthAddress from '@/hooks/useEthAddress';
+import useBtcAddress from '@/hooks/useBtcAddress';
 import { useMutation } from '@tanstack/react-query';
 import { useActor } from '@/actor';
 import useHandleAgentError from '@/hooks/useHandleAgentError';
 import { queryClient } from '@/main';
 
 export default function SendButton() {
-  const { isPending: isFetchingAddress } = useEthAddress();
+  const { isPending: isFetchingAddress } = useBtcAddress();
   const { actor: backend } = useActor();
   const { handleAgentError } = useHandleAgentError();
   const {
-    mutate: sendEth,
+    mutate: sendBtc,
     isPending: isSending,
     isError,
     data: sendResult,
@@ -30,7 +30,7 @@ export default function SendButton() {
       }
       try {
         const result = await backend.send_btc(to, BigInt(amount));
-        // Refresh the balance in 5 seconds to give the Etherscan API time to catch up.
+        // Refresh the balance in 5 seconds to give the blockchain API time to catch up.
         // A better way to update balace would of course be:
         // 1. Parse response and check that transaction was successful
         // 2. Update balance manually, no API calls required.
@@ -47,7 +47,7 @@ export default function SendButton() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    sendEth({
+    sendBtc({
       to: event.currentTarget.toAddress.value,
       amount: event.currentTarget.amount.value,
     });
@@ -93,7 +93,7 @@ export default function SendButton() {
           </Button>
           {isError && (
             <div className="font-semibold bg-destructive/30 rounded-lg p-2 text-destructive-foreground">
-              There was an error sending ETH.
+              There was an error sending BTC.
             </div>
           )}
           {sendResult && (

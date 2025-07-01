@@ -13,6 +13,7 @@ pub async fn get_address(principal: Option<Principal>) -> Result<String, String>
     // If no principal is specified in call, use caller principal
     let principal = principal.unwrap_or_else(ic_cdk::api::msg_caller);
 
+    // The Bitcoin context contains information about the currently selected Bitcoin network and the Bitcoin canister.
     let ctx = BTC_CONTEXT.with(|ctx| ctx.get());
 
     // Derive the public key used as the internal key (untweaked key path base).

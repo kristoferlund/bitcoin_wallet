@@ -3,13 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import useHandleAgentError from "./useHandleAgentError";
 import { useInternetIdentity } from "ic-use-internet-identity";
 
-export default function useEthAddress() {
+export default function useBtcAddress() {
   const { actor: backend } = useActor();
   const { handleAgentError } = useHandleAgentError();
   const { identity } = useInternetIdentity();
   const principal = identity?.getPrincipal();
 
-  // This query caches the generated Ethereum address in local storage
+  // This query caches the generated Bitcoin address in local storage
   // to minimize the number of calls to the backend and to improve UX.
   return useQuery({
     queryKey: ['address', principal],
@@ -18,7 +18,7 @@ export default function useEthAddress() {
         throw new Error("Principal is required.");
       }
 
-      const cacheKey = `ethAddress-${principal.toText()}`;
+      const cacheKey = `btcAddress-${principal.toText()}`;
       const cachedAddress = localStorage.getItem(cacheKey);
 
       if (cachedAddress) {

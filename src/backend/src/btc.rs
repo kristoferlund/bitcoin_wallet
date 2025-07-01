@@ -2,14 +2,31 @@
 // It includes UTXO selection algorithms, transaction building, fee estimation, and
 // BIP-32 derivation path handling used across all Bitcoin address types.
 
-use crate::BitcoinContext;
 use bitcoin::{
     self, absolute::LockTime, blockdata::witness::Witness, hashes::Hash, transaction::Version,
     Address, Amount, OutPoint, ScriptBuf, Sequence, Transaction, TxIn, TxOut, Txid,
 };
 use ic_cdk::bitcoin_canister::{
-    bitcoin_get_current_fee_percentiles, GetCurrentFeePercentilesRequest, Utxo,
+    bitcoin_get_current_fee_percentiles, GetCurrentFeePercentilesRequest, Network, Utxo,
 };
+
+/// Runtime configuration shared across all Bitcoin-related operations.
+///
+/// This struct carries network-specific context:
+/// - `network`: The ICP Bitcoin API network enum.
+/// - `bitcoin_network`: The corresponding network enum from the `bitcoin` crate, used
+///   for address formatting and transaction construction.
+/// - `key_name`: The global ECDSA key name used when requesting derived keys or making
+///   signatures. Different key names are used locally and when deployed on the IC.
+///
+/// Note: Both `network` and `bitcoin_network` are needed because ICP and the
+/// Bitcoin library use distinct network enum types.
+#[derive(Clone, Copy)]
+pub struct BitcoinContext {
+    pub network: Network,
+    pub bitcoin_network: bitcoin::Network,
+    pub key_name: &'static str,
+}
 
 /// Selects UTXOs using a greedy algorithm to cover the required amount plus fee.
 ///

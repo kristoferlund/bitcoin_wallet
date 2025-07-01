@@ -1,8 +1,9 @@
-mod common;
+mod btc;
 mod p2tr;
 mod schnorr;
 mod service;
 
+use btc::BitcoinContext;
 use candid::Principal;
 use ic_cdk::export_candid;
 use ic_cdk::{bitcoin_canister::Network, init, post_upgrade};
@@ -16,24 +17,6 @@ fn auth_guard() -> Result<(), String> {
         }
         _ => Ok(()),
     }
-}
-
-/// Runtime configuration shared across all Bitcoin-related operations.
-///
-/// This struct carries network-specific context:
-/// - `network`: The ICP Bitcoin API network enum.
-/// - `bitcoin_network`: The corresponding network enum from the `bitcoin` crate, used
-///   for address formatting and transaction construction.
-/// - `key_name`: The global ECDSA key name used when requesting derived keys or making
-///   signatures. Different key names are used locally and when deployed on the IC.
-///
-/// Note: Both `network` and `bitcoin_network` are needed because ICP and the
-/// Bitcoin library use distinct network enum types.
-#[derive(Clone, Copy)]
-pub struct BitcoinContext {
-    pub network: Network,
-    pub bitcoin_network: bitcoin::Network,
-    pub key_name: &'static str,
 }
 
 // Global, thread-local instance of the Bitcoin context.

@@ -1,4 +1,4 @@
-import useEthBalance from '@/hooks/useEthBalance';
+import useBtcBalance from '@/hooks/useBtcBalance';
 import { Skeleton } from './ui/skeleton';
 import { satoshiToDecimal } from '@/lib/btc';
 
@@ -7,7 +7,7 @@ export function Balance() {
     data: balance,
     isPending: isFetchingBalance,
     isError,
-  } = useEthBalance();
+  } = useBtcBalance();
 
   if (isFetchingBalance) {
     return <Skeleton className="w-full h-14" />;

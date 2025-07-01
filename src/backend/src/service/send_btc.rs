@@ -9,7 +9,7 @@ use std::str::FromStr;
 
 use crate::{
     auth_guard,
-    common::{get_fee_per_byte, PrimaryOutput},
+    btc::{get_fee_per_byte, PrimaryOutput},
     p2tr::{self},
     schnorr::{get_schnorr_public_key, sign_with_schnorr},
     BTC_CONTEXT,

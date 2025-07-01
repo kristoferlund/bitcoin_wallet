@@ -1,8 +1,8 @@
-import useEthAddress from "@/hooks/useEthAddress";
+import useBtcAddress from "@/hooks/useBtcAddress";
 import { Skeleton } from "./ui/skeleton";
 
-export function EthAddress() {
-  const { data: address, isPending: isFetchingAddress } = useEthAddress();
+export function BtcAddress() {
+  const { data: address, isPending: isFetchingAddress } = useBtcAddress();
 
   if (isFetchingAddress || !address) {
     return <Skeleton className="h-[19px] w-[125px] inline-block" />
