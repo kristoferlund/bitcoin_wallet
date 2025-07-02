@@ -17,7 +17,7 @@ The frontend is built with React and Vite.
 > [!TIP]
 > Use this repository as a starting point for building your own multiuser Bitcoin wallet on the Internet Computer.
 >
-> Live demo: <https://7vics-6yaaa-aaaai-ap7lq-cai.icp0.io>
+> Live demo: <https://unenw-dyaaa-aaaac-a3e6a-cai.icp0.io/>
 
 ![](./media/screenshot.png)
 
