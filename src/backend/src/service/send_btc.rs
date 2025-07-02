@@ -92,7 +92,7 @@ pub async fn send_btc(
         &PrimaryOutput::Address(dst_address, amount_in_satoshi),
         fee_per_byte,
     )
-    .await;
+    .await?;
 
     // Sign the transaction using key path spending.
     // For now, we use the mock signer since the actual Schnorr API integration

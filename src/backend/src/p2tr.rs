@@ -27,7 +27,7 @@ pub(crate) async fn build_transaction(
     utxos_mode: SelectUtxosMode,
     primary_output: &PrimaryOutput,
     fee_per_byte: MillisatoshiPerByte,
-) -> (Transaction, Vec<TxOut>) {
+) -> Result<(Transaction, Vec<TxOut>), String> {
     // We have a chicken-and-egg problem where we need to know the length
     // of the transaction in order to compute its proper fee, but we need
     // to know the proper fee in order to figure out the inputs needed for
@@ -45,12 +45,10 @@ pub(crate) async fn build_transaction(
         let utxos_to_spend = match utxos_mode {
             SelectUtxosMode::Greedy => select_utxos_greedy(own_utxos, amount, total_fee),
             SelectUtxosMode::Single => select_one_utxo(own_utxos, amount, total_fee),
-        }
-        .unwrap();
+        }?;
 
         let (transaction, prevouts) =
-            build_transaction_with_fee(utxos_to_spend, own_address, primary_output, total_fee)
-                .unwrap();
+            build_transaction_with_fee(utxos_to_spend, own_address, primary_output, total_fee)?;
 
         // Sign the transaction. In this case, we only care about the size
         // of the signed transaction, so we use a mock signer here for
@@ -72,7 +70,7 @@ pub(crate) async fn build_transaction(
 
         let tx_vsize = signed_transaction.vsize() as u64;
         if (tx_vsize * fee_per_byte) / 1000 == total_fee {
-            return (transaction, prevouts);
+            return Ok((transaction, prevouts));
         } else {
             total_fee = (tx_vsize * fee_per_byte) / 1000;
         }
