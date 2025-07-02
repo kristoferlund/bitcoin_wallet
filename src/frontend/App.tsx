@@ -18,7 +18,7 @@ export default function App() {
   return (
     <main>
       <div className="flex justify-center mb-5">
-        <Badge variant="outline">Bitcoin mainnet version</Badge>
+        <Badge variant="outline">Bitcoin testnet4 version</Badge>
       </div>
       <AppInner />
 
