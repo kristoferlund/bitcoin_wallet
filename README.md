@@ -52,7 +52,7 @@ Setup your Internet Computer developer environment as well as a local Bitcoin te
 
 [https://internetcomputer.org/docs/build-on-btc/btc-dev-env](https://internetcomputer.org/docs/build-on-btc/btc-dev-env)
 
-## Running the project
+## Deploying the project
 
 ### 1. Start the Internet Computer with Bitcoin support enabled
 
@@ -89,6 +89,19 @@ During development, you can run the frontend with hot reloading using Vite.
 ```bash
 pnpm run dev
 ```
+
+## Before you start testing
+
+> [!IMPORTANT]
+> The Bitcoin "coinbase maturity rule" states that in order to spend newly created bitcoin, it has to be at least 100 blocks old.
+>
+> Before you create any transactions, mine at least 100 blocks and assign yourself the bitcoin rewards.
+>
+> ```
+> bitcoin-cli -conf=$(pwd)/bitcoin.conf generatetoaddress 100 <address>
+>```
+>
+> Also important, the local regtest network does not mine blocks automatically. You will need to mine blocks manually using the `bitcoin-cli` command after any transaction. Use the above command to mine blocks.
 
 ## Backend canister methods
 
