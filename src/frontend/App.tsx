@@ -21,25 +21,11 @@ export default function App() {
 
       <div className="links">
         <a
-          href="https://github.com/kristoferlund/bitcoin_wallet/graphs/contributors"
+          href="https://internetcomputer.org/"
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
         >
-          <img src="https://img.shields.io/github/contributors/kristoferlund/bitcoin_wallet.svg?style=for-the-badge" />
-        </a>
-        <a
-          href="https://github.com/kristoferlund/bitcoin_wallet"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <img src="https://img.shields.io/github/license/kristoferlund/bitcoin_wallet.svg?style=for-the-badge" />
-        </a>
-        <a
-          href="https://github.com/kristoferlund/bitcoin_wallet/stargazers"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <img src="https://img.shields.io/github/stars/kristoferlund/bitcoin_wallet?style=for-the-badge" />
+          <img src="/ic.png" alt="Internet Computer Logo" className="w-40" />
         </a>
       </div>
     </main>

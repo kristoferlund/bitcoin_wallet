@@ -12,7 +12,6 @@ import useBtcAddress from '@/hooks/useBtcAddress';
 import { useMutation } from '@tanstack/react-query';
 import { useActor } from '@/actor';
 import useHandleAgentError from '@/hooks/useHandleAgentError';
-import { queryClient } from '@/main';
 
 export default function SendButton() {
   const { isPending: isFetchingAddress } = useBtcAddress();
@@ -29,15 +28,7 @@ export default function SendButton() {
         throw new Error('backend actor not initialized');
       }
       try {
-        const result = await backend.send_btc(to, BigInt(amount));
-        // Refresh the balance in 5 seconds to give the blockchain API time to catch up.
-        // A better way to update balace would of course be:
-        // 1. Parse response and check that transaction was successful
-        // 2. Update balance manually, no API calls required.
-        setTimeout(() => {
-          queryClient.invalidateQueries({ queryKey: ['balance'] });
-        }, 5000);
-        return result;
+        return await backend.send_btc(to, BigInt(amount));
       } catch (e) {
         handleAgentError(e);
         console.error(e);
@@ -77,7 +68,7 @@ export default function SendButton() {
           />
           <Input
             type="text"
-            placeholder="Amount"
+            placeholder="Amount in satoshis"
             name="amount"
             data-1p-ignore
           />
@@ -96,10 +87,25 @@ export default function SendButton() {
               There was an error sending BTC.
             </div>
           )}
-          {sendResult && (
-            <pre className="bg-muted text-xs rounded-lg p-2 whitespace-pre-wrap break-all break-words box-border overflow-x-auto text-left">
-              {JSON.stringify(sendResult)}
-            </pre>
+          {sendResult && 'Ok' in sendResult && (
+            <div className="flex flex-col gap-2 rounded-lg p-2 bg-muted text-xs">
+              Transaction has been accepted into the mempool. This wallet does
+              not wait for confirmations. You can track the transaction status
+              at the following link:
+              <a
+                href={`https://mempool.space/testnet4/tx/${sendResult.Ok}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
+                https://mempool.space/testnet4/tx/{sendResult.Ok.slice(0, 5)}...
+              </a>
+            </div>
+          )}
+          {sendResult && 'Err' in sendResult && (
+            <div className="flex flex-col gap-2 font-semibold bg-destructive/30 rounded-lg p-2 text-destructive-foreground text-xs">
+              Error: {sendResult.Err}
+            </div>
           )}
         </form>
       </DialogContent>
