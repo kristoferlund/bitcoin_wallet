@@ -93,12 +93,12 @@ export default function SendButton() {
               not wait for confirmations. You can track the transaction status
               at the following link:
               <a
-                href={`https://mempool.space/testnet4/tx/${sendResult.Ok}`}
+                href={`https://mempool.space/tx/${sendResult.Ok}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline"
               >
-                https://mempool.space/testnet4/tx/{sendResult.Ok.slice(0, 5)}...
+                https://mempool.space/tx/{sendResult.Ok.slice(0, 5)}...
               </a>
             </div>
           )}

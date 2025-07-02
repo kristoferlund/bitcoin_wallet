@@ -27,9 +27,8 @@ export default function LoginButton() {
         <InfoIcon className="w-4 h-4" />
         <AlertDescription>
           <div className="flex flex-col gap-2">
-            This example application creates a Bitcoin wallet for each signed in
-            user. Send and receive bitcoin on testnet4 or on a local regtest
-            network.
+            This is an example application, a multiuser Bitcoin wallet on the
+            Internet Computer (ICP).
             <div className="flex items-center gap-2">
               Source code:
               <a

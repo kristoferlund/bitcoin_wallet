@@ -29,8 +29,6 @@ export default function useBtcBalance() {
 
         const balance = result.Ok;
 
-        console.log(result.Ok);
-
         return balance;
       } catch (e) {
         handleAgentError(e);

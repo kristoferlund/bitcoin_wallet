@@ -34,10 +34,7 @@ export default function ReceiveButton() {
         <DialogHeader>
           <DialogTitle>Receive</DialogTitle>
         </DialogHeader>
-        <div className="font-semibold rounded-lg p-2 bg-muted text-xs">
-          Send only testnet4 Bitcoin to this address, all other funds will be
-          lost.
-        </div>
+
         {address && (
           <>
             {' '}
