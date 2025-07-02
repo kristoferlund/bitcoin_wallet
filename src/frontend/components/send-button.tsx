@@ -12,6 +12,7 @@ import useBtcAddress from '@/hooks/useBtcAddress';
 import { useMutation } from '@tanstack/react-query';
 import { useActor } from '@/actor';
 import useHandleAgentError from '@/hooks/useHandleAgentError';
+import SendConfirmation from './send-confirmation';
 
 export default function SendButton() {
   const { isPending: isFetchingAddress } = useBtcAddress();
@@ -22,6 +23,8 @@ export default function SendButton() {
     isPending: isSending,
     isError,
     data: sendResult,
+    isIdle,
+    reset,
   } = useMutation({
     mutationFn: async ({ to, amount }: { to: string; amount: string }) => {
       if (!backend) {
@@ -32,6 +35,7 @@ export default function SendButton() {
       } catch (e) {
         handleAgentError(e);
         console.error(e);
+        throw e;
       }
     },
   });
@@ -45,7 +49,7 @@ export default function SendButton() {
   };
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={reset}>
       <DialogTrigger asChild>
         <Button
           disabled={isFetchingAddress}
@@ -59,55 +63,46 @@ export default function SendButton() {
         <DialogHeader>
           <DialogTitle>Send</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <Input
-            type="text"
-            placeholder="To address"
-            name="toAddress"
-            data-1p-ignore
-          />
-          <Input
-            type="text"
-            placeholder="Amount in satoshis"
-            name="amount"
-            data-1p-ignore
-          />
-          <Button disabled={isSending} type="submit">
-            {isSending ? (
-              <>
-                <LoaderCircle className="animate-spin w-4 h-4 mr-1" />
-                Sending ...
-              </>
-            ) : (
-              'Send'
-            )}
-          </Button>
-          {isError && (
-            <div className="font-semibold bg-destructive/30 rounded-lg p-2 text-destructive-foreground">
-              There was an error sending BTC.
-            </div>
-          )}
-          {sendResult && 'Ok' in sendResult && (
-            <div className="flex flex-col gap-2 rounded-lg p-2 bg-muted text-xs">
-              Transaction has been accepted into the mempool. This wallet does
-              not wait for confirmations. You can track the transaction status
-              at the following link:
-              <a
-                href={`https://mempool.space/tx/${sendResult.Ok}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline"
-              >
-                https://mempool.space/tx/{sendResult.Ok.slice(0, 5)}...
-              </a>
-            </div>
-          )}
-          {sendResult && 'Err' in sendResult && (
-            <div className="flex flex-col gap-2 font-semibold bg-destructive/30 rounded-lg p-2 text-destructive-foreground text-xs">
-              Error: {sendResult.Err}
-            </div>
-          )}
-        </form>
+        {(isIdle || isSending) && (
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <Input
+              type="text"
+              placeholder="To address"
+              name="toAddress"
+              data-1p-ignore
+            />
+            <Input
+              type="text"
+              placeholder="Amount in satoshis"
+              name="amount"
+              data-1p-ignore
+            />
+            <Button disabled={isSending} type="submit">
+              {isSending ? (
+                <>
+                  <LoaderCircle className="animate-spin w-4 h-4 mr-1" />
+                  Sending ...
+                </>
+              ) : (
+                'Send'
+              )}
+            </Button>
+          </form>
+        )}
+        {isError && (
+          <div className="bg-destructive/30 rounded-lg p-2 text-destructive-foreground">
+            There was an error sending BTC, see browser console for details.
+          </div>
+        )}
+        {sendResult && 'Ok' in sendResult && (
+          <SendConfirmation txId={sendResult.Ok} />
+        )}
+        {sendResult && 'Err' in sendResult && (
+          <div className="flex flex-col gap-2 bg-destructive/30 rounded-lg p-2 text-destructive-foreground">
+            <div>Error, couldn't send.</div>
+            <div>{sendResult.Err}</div>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

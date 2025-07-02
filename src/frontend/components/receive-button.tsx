@@ -8,13 +8,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import useBtcAddress from '@/hooks/useBtcAddress';
-import { toast } from '@/hooks/use-toast';
 import QRCode from 'react-qr-code';
-
-function copyToClipboard(address: string) {
-  navigator.clipboard.writeText(address);
-  toast({ title: 'Copied' });
-}
+import { copyToClipboard } from '@/lib/utils';
 
 export default function ReceiveButton() {
   const { data: address, isPending: isFetchingAddress } = useBtcAddress();
