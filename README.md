@@ -1,16 +1,3 @@
-bitcoind -conf=$(pwd)/bitcoin.conf -datadir=$(pwd)/bitcoin_data --port=18444
-
-bitcoin-cli -conf=$(pwd)/bitcoin.conf generatetoaddress 1 <address>
-
-chmod +x build.sh
-
-dfx start --clean --enable-bitcoin --bitcoin-node 127.0.0.1:18444
-
-dfx deploy backend --argument '(variant { regtest })'
-
-
----
-
 # A multiuser Bitcoin wallet built on the Internet Computer (ICP)
 
 This multiuser Bitcoin wallet allows the user to generate a Bitcoin
