@@ -7,7 +7,7 @@ export default function SendConfirmation({ txId }: { txId: string }) {
       Your transaction was successfully sent, track its status on the blockchain
       explorer.
       <a
-        href={`https://mempool.space/tx/${txId}`}
+        href={`https://mempool.space/testnet4/tx/${txId}`}
         className="underline"
         target="_blank"
         rel="noopener noreferrer"
