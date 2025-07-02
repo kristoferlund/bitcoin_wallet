@@ -19,6 +19,7 @@ The frontend is built with React and Vite.
 >
 > ## Live demos
 > Mainnet: <https://unenw-dyaaa-aaaac-a3e6a-cai.icp0.io/>
+>
 > Testnet: <https://mcejh-aqaaa-aaaan-qz4la-cai.icp0.io/>
 
 ![](./media/screenshot.png)
