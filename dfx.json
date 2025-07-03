@@ -22,6 +22,7 @@
         "output": "src/backend/declarations"
       },
       "gzip": true,
+      "init_arg": "(variant { mainnet })",
       "metadata": [
         {
           "name": "candid:service",
