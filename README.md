@@ -7,6 +7,9 @@ The backend canister uses the [ICP Bitcoin API](https://internetcomputer.org/doc
 
 The frontend is built with React and Vite.
 
+> [!TIP]
+> Use this repository as a starting point for building your own multiuser Bitcoin wallet on the Internet Computer.
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -14,13 +17,17 @@ The frontend is built with React and Vite.
 [![MIT License][license-shield]](LICENSE)
 
 
-> [!TIP]
-> Use this repository as a starting point for building your own multiuser Bitcoin wallet on the Internet Computer.
->
-> ## Live demos
-> Mainnet: <https://unenw-dyaaa-aaaac-a3e6a-cai.icp0.io/>
->
-> Testnet: <https://mcejh-aqaaa-aaaan-qz4la-cai.icp0.io/>
+## Try it!
+
+ICP Ninja is a browser IDE for creating Internet Computer (ICP) smart contracts. Write and deploy entire applications directly onchain from the browser. Deploy this example in less than a minute:
+
+[![](https://icp.ninja/assets/open.svg)](https://icp.ninja/i?g=https://github.com/kristoferlund/bitcoin_wallet/tree/ninja)
+
+You can also try two predeployed versions of the wallet:
+
+Mainnet: <https://unenw-dyaaa-aaaac-a3e6a-cai.icp0.io>
+
+Testnet: <https://mcejh-aqaaa-aaaan-qz4la-cai.icp0.io>
 
 ![](./media/screenshot.png)
 
@@ -35,6 +42,9 @@ canister calls to provide a responsive UI.
   time the user logs in, the address is retrieved from local state.
 - The balance of the Bitcoin address is queried from the backend canister that in
   turn queries the ICP Bitcoin API. A more efficient way to query the balance would be to call an external Bitcoin API directly from the frontend.
+
+> [!IMPORTANT]
+> This project is not affiliated with or endorsed by the DFINITY Foundation. It has not undergone any formal security review and is intended for educational and experimental purposes only. Do not use this code in production environments.
 
 ## Setup, pre-requisites
 
