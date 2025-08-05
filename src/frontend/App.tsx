@@ -3,6 +3,7 @@ import { useInternetIdentity } from 'ic-use-internet-identity';
 import Wallet from './components/wallet';
 import { Toaster } from './components/ui/toaster';
 import { Badge } from './components/ui/badge';
+import WalletWarning from './components/wallet-warning';
 
 function AppInner() {
   const { identity } = useInternetIdentity();
@@ -20,6 +21,9 @@ export default function App() {
       <div className="flex justify-center mb-5">
         <Badge variant="outline">Bitcoin mainnet version</Badge>
       </div>
+
+      <WalletWarning />
+
       <AppInner />
 
       <Toaster />
