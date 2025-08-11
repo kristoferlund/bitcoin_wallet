@@ -4,11 +4,11 @@ import { Bitcoin, InfoIcon } from 'lucide-react';
 import { Alert, AlertDescription } from './ui/alert';
 
 export default function LoginButton() {
-  const { login, loginStatus } = useInternetIdentity();
+  const { login, status } = useInternetIdentity();
 
-  const disabled = loginStatus === 'logging-in' || loginStatus === 'success';
+  const disabled = status === 'logging-in' || status === 'success';
   const text =
-    loginStatus === 'logging-in'
+    status === 'logging-in'
       ? 'Signing in...'
       : 'Sign in with Internet Identity';
 

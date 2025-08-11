@@ -4,9 +4,19 @@ import Wallet from './components/wallet';
 import { Toaster } from './components/ui/toaster';
 import { Badge } from './components/ui/badge';
 import WalletWarning from './components/wallet-warning';
+import { useEffect } from "react";
+import { useBackendActor } from "./main";
 
 function AppInner() {
   const { identity } = useInternetIdentity();
+  const { authenticate } = useBackendActor();
+
+  // Authenticate backend actor when identity is available
+  useEffect(() => {
+    if (identity) {
+      authenticate(identity);
+    }
+  }, [identity, authenticate]);
 
   if (!identity) {
     return <Login />;

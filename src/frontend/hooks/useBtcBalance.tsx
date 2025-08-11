@@ -1,10 +1,10 @@
-import { useActor } from '@/actor';
 import { useQuery } from '@tanstack/react-query';
 import useHandleAgentError from './useHandleAgentError';
 import { useInternetIdentity } from 'ic-use-internet-identity';
+import { useBackendActor } from '@/main';
 
 export default function useBtcBalance() {
-  const { actor: backend } = useActor();
+  const { actor: backend } = useBackendActor();
   const { handleAgentError } = useHandleAgentError();
   const { identity } = useInternetIdentity();
   const principal = identity?.getPrincipal();
