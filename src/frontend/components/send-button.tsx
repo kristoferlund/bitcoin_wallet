@@ -10,13 +10,13 @@ import {
 import { Input } from './ui/input';
 import useBtcAddress from '@/hooks/useBtcAddress';
 import { useMutation } from '@tanstack/react-query';
-import { useActor } from '@/actor';
 import useHandleAgentError from '@/hooks/useHandleAgentError';
 import SendConfirmation from './send-confirmation';
+import { useBackendActor } from '@/main';
 
 export default function SendButton() {
   const { isPending: isFetchingAddress } = useBtcAddress();
-  const { actor: backend } = useActor();
+  const { actor: backend } = useBackendActor();
   const { handleAgentError } = useHandleAgentError();
   const {
     mutate: sendBtc,

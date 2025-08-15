@@ -75,7 +75,7 @@ dfx deploy
 When asked to select a network, choose `regtest`.
 
 > [!TIP]
-> If you get an permissions error when deploying, you might need to set the execute
+> If you get a permissions error when deploying, you might need to set the execute
 > bit on the build script.
 >
 > ```
@@ -93,9 +93,9 @@ pnpm run dev
 ## Before you start testing
 
 > [!IMPORTANT]
-> The Bitcoin "coinbase maturity rule" states that in order to spend newly created bitcoin, it has to be at least 100 blocks old.
+> The Bitcoin "coinbase maturity rule" states that in order to spend newly created Bitcoin, it has to be at least 100 blocks old.
 >
-> Before you create any transactions, mine at least 100 blocks and assign yourself the bitcoin rewards.
+> Before you create any transactions, mine at least 100 blocks and assign yourself the Bitcoin rewards.
 >
 > ```
 > bitcoin-cli -conf=$(pwd)/bitcoin.conf generatetoaddress 100 <address>
@@ -132,7 +132,7 @@ dfx canister call backend get_address '(opt principal "hkroy-sm7vs-yyjs7-ekppe-q
 
 ### `get_balance`
 
-Returns the bitcoin balance of the address controlled by a principal.
+Returns the Bitcoin balance of the address controlled by a principal.
 
 Call signature:
 
@@ -142,13 +142,13 @@ type BalanceResult = variant { Ok : nat64; Err : text };
 get_balance : (owner: opt principal) -> (BalanceResult);
 ```
 
-Get the ETH balance for the calling principal:
+Get the Bitcoin balance for the calling principal:
 
 ```bash
 dfx canister call backend get_balance
 ```
 
-Get the ETH balance for a specified principal:
+Get the Bitcoin balance for a specified principal:
 
 ```bash
 dfx canister call backend get_balance '(opt principal "hkroy-sm7vs-yyjs7-ekppe-qqnwx-hm4zf-n7ybs-titsi-k6e3k-ucuiu-uqe")'
@@ -156,7 +156,7 @@ dfx canister call backend get_balance '(opt principal "hkroy-sm7vs-yyjs7-ekppe-q
 
 ### `send_btc`
 
-Sends ETH from the Bitcoin controlled by the calling principal to any
+Sends Bitcoin from the address controlled by the calling principal to any
 recipient.
 
 Call signature:
@@ -167,7 +167,7 @@ type SendResult = variant { Ok : text; Err : text };
 send_btc : (destination_address : BitcoinAddress, amount_in_satoshi : Satoshi) -> (SendResult);
 ```
 
-Send ETH by specifying receiver address and ETH amount (in wei):
+Send Bitcoin by specifying receiver address and amount (in satoshi):
 
 ```bash
 dfx canister call backend send_btc '("bcrt1pvd8yj03ts02lleztzf3em0glwrw7p03lumk4s6jv602ymzgc5jcqf2gsz8", 1000)'

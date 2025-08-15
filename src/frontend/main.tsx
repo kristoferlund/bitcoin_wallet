@@ -4,7 +4,14 @@ import App from './App.tsx'
 import './index.css'
 import { InternetIdentityProvider } from 'ic-use-internet-identity'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import Actors from './actor.tsx'
+import { _SERVICE } from "../backend/declarations/backend.did";
+import {
+  createActorHook,
+} from "ic-use-actor";
+import {
+  canisterId,
+  idlFactory,
+} from "../backend/declarations/index"
 
 // Mimimize reloading of queries
 export const queryClient = new QueryClient({
@@ -18,13 +25,23 @@ export const queryClient = new QueryClient({
   }
 });
 
+// Create an actor hook we can use to communicate with the canister backend
+export const useBackendActor = createActorHook<_SERVICE>({
+  canisterId,
+  idlFactory,
+});
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <InternetIdentityProvider>
-        <Actors>
-          <App />
-        </Actors>
+      <InternetIdentityProvider
+        loginOptions={{
+          identityProvider: process.env.DFX_NETWORK === "local"
+            ? `http://${process.env.CANISTER_ID_INTERNET_IDENTITY}.localhost:4943`
+            : "https://identity.ic0.app"
+        }}
+      >
+        <App />
       </InternetIdentityProvider>
     </QueryClientProvider>
   </StrictMode>,
